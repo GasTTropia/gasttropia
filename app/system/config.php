@@ -12,8 +12,11 @@ return [
 
         'table' => '@system_auth',
         'cookie' => [
-            'name' => 'pagekit_auth',
-            'lifetime' => 315360000
+            'name' => 'gasttropia_auth',
+            'lifetime' => 315360000,
+            'httponly' => true,
+            'secure' => true,
+            'samesite' => 'Lax'
         ]
 
     ],
@@ -31,8 +34,10 @@ return [
         'files' => "$path/tmp/sessions",
         'table' => '@system_session',
         'cookie' => [
-            'name' => 'pagekit_session',
-            'httponly' => true
+            'name' => 'gasttropia_session',
+            'httponly' => true,
+            'secure' => true,
+            'samesite' => 'Lax'
         ]
 
     ],
