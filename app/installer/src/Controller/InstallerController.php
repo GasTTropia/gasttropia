@@ -14,7 +14,7 @@ class InstallerController
      */
     public function __construct()
     {
-        $app = App::get('app');
+        $app = App::getInstance();
         $this->installer = new Installer($app);
     }
 
