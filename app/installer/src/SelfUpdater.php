@@ -36,7 +36,7 @@ class SelfUpdater
     }
 
     /**
-     * Runs Pagekit self update.
+     * Runs GasTTropia self update.
      *
      * @param $file
      * @throws \Exception
@@ -87,7 +87,7 @@ class SelfUpdater
 
             $this->output->write('Removing old files...');
             foreach ($this->cleanup($fileList, $path) as $file) {
-                $this->writeln(sprintf('<error>\'%s\’ could not be removed</error>', $file));
+                $this->output->writeln(sprintf('<error>\'%s\’ could not be removed</error>', $file));
             }
 
             unlink($file);
@@ -226,7 +226,7 @@ class SelfUpdater
     }
 
     /**
-     * Toggles update mode without booting Pagekit application.
+     * Toggles update mode without booting GasTTropia application.
      *
      * @param $active
      */

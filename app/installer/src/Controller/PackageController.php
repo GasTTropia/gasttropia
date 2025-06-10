@@ -138,7 +138,7 @@ class PackageController
         }
 
         if ($package->get('type') !== 'pagekit-' . $type) {
-            App::abort(400, __('No Pagekit %type%', ['%type%' => $type]));
+            App::abort(400, __('No GasTTropia %type%', ['%type%' => $type]));
         }
 
         $filename = str_replace('/', '-', $package->getName()) . '-' . $package->get('version') . '.zip';

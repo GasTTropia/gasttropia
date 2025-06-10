@@ -6,7 +6,7 @@
                     <div class="tm-container">
                         <div class="uk-panel uk-text-center">
                             <a id="next" @click="gotoStep('language')">
-                                <img src="/app/system/assets/images/pagekit-logo-large.svg" alt="Pagekit">
+                                <img width="125" src="/app/system/assets/images/ttags-logo.png" title="TTags - Simple, Smart, Innovative" alt="TTags Logo">
                                 <div class="uk-margin">
                                     <svg class="tm-arrow" width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
                                         <line fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="2" y1="18" x2="36" y2="18" />
@@ -215,7 +215,7 @@ const Installer = {
                         mysql: {
                             user: '',
                             host: 'localhost',
-                            dbname: 'pagekit'
+                            dbname: 'gasttropia'
                         },
                         sqlite: {}
                     },
@@ -236,7 +236,7 @@ const Installer = {
         // set default db
         this.config.database.default = this.sqlite ? 'sqlite' : 'mysql';
         // setup default table prefix
-        _.forEach(this.config.database.connections, (connection) => { _.extend(connection, { prefix: 'pk_' }); });
+        _.forEach(this.config.database.connections, (connection) => { _.extend(connection, { prefix: 'tt_' }); });
         // Backup the current db configuration
         this.defaultConfig = { ...this.config };
 

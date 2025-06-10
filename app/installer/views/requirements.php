@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Pagekit Installer Errors</title>
+        <title>GasTTropia Installer Errors</title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,7 +16,7 @@
         <div class="uk-height-viewport uk-flex uk-flex-center uk-flex-middle">
             <div class="tm-container uk-text-center">
 
-                <img class="uk-margin-medium-bottom" src="app/system/assets/images/pagekit-logo-large-black.svg" alt="Pagekit">
+                <img class="uk-margin-medium-bottom" width="125" src="app/system/assets/images/ttags-logo.png" title="TTags - Simple, Smart, Innovative" alt="TTags Logo">
 
                 <div class="uk-panel">
                     <h1>System Requirements</h1>

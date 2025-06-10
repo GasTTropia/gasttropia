@@ -31,17 +31,50 @@
     # RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
     # Redirect requests to access the site without the 'www.' prefix
-    # RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
-    # RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+    RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+    RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
 
     # Redirect requests to access the site with HTTPS
-    # RewriteCond %{HTTPS} off
-    # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R]
+    RewriteCond %{HTTPS} off
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
     # Rewrite request to use the index.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ index.php [L]
+
+    # HSTS verwenden
+    # Pflichtangabe: max-age""
+    # Optional: "includeSubDomains"
+    Header set Strict-Transport-Security "max-age=31556926; includeSubDomains;preload"
+
+    # Verhindert mime based attacks, nur IE und Chrome
+    Header set X-Content-Type-Options "nosniff"
+
+    # Aktiviert XSS Präventions-/Filter-Tools
+    # Optional: mode=block
+    Header set X-XSS-Protection "1; mode=block"
+
+    # Begrenzung der frame/iframe Darstellung
+    Header set X-Frame-Options "SAMEORIGIN"
+
+    # Cookies nur über SSL and kein Javascript Zugriff
+    # Optional: Expires, Max-Age, Path, Domain
+    Header always edit Set-Cookie (.*) "$1; HttpOnly; Secure; SameSite=Lax"
+
+    # Kein PHP und System-Version ausgeben
+    Header unset X-Powered-By
+
+    # Download / Lade Inhalte nur von Seiten die explizit erlaubt sind
+    # Beispiel das alles von der eigenen Domain erlaubt allerdings keinerlei Externas:
+    # Header set Content-Security-Policy "default-src 'self'; script-src 'self' cdn.jsdelivr.net gtranslate.net *.gtranslate.net translate.google.com gstatic.com translate.googleapis.com; connect-src 'self' translate.googleapis.com; img-src * gtranslate.net *.gtranslate.net; style-src 'self' gtranslate.net *.gtranslate.net gstatic.com;"
+
+    # Kein Zugriff auf Telemetriedaten von Browserfunktionen
+    # Beispiel, dass kein Zugriff auf Daten von das Sensoren, Kamera, Mikrofon oder USB-Slot erfolgt:
+    Header set Permissions-Policy "accelerometer=(), camera=(), microphone=(), geolocation=(), usb=(), gyroscope=(), magnetometer=(), midi=(), ambient-light-sensor=()"
+
+    # Referrer Policy
+    Header set Referrer-Policy "origin-when-cross-origin"
 
     <IfModule mod_env.c>
         SetEnv HTTP_MOD_REWRITE On
@@ -111,12 +144,7 @@
     ExpiresByType text/html               "access plus 0 seconds"
     ExpiresByType text/plain              "access plus 0 seconds"
 
-    # Use expires far in the future for css and javascript because Pagekit uses filenames to break the cache
+    # Use expires far in the future for css and javascript because GasTTropia uses filenames to break the cache
     ExpiresByType text/css                "access plus 1 year"
     ExpiresByType application/javascript  "access plus 1 year"
-</IfModule>
-
-# Avoid PHP 5.6 deprecated $HTTP_RAW_POST_DATA warnings
-<IfModule mod_php5.c>
-    php_value always_populate_raw_post_data -1
 </IfModule>

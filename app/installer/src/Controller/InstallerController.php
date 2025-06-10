@@ -14,7 +14,7 @@ class InstallerController
      */
     public function __construct()
     {
-        $app = App::getInstance();
+        $app = App::get('app');
         $this->installer = new Installer($app);
     }
 
@@ -24,7 +24,7 @@ class InstallerController
 
         return [
             '$view' => [
-                'title' => __('Pagekit Installer'),
+                'title' => __('GasTTropia Installer'),
                 'name' => 'app/installer/views/installer.php',
             ],
             '$installer' => [

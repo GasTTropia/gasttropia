@@ -64,7 +64,7 @@ class CookieJar
      * @param  bool   $secure
      * @param  bool   $httpOnly
      */
-    public function set($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = true): Cookie
+    public function set($name, $value, $expire = 0, $path = null, $domain = null, $secure = true, $httpOnly = true): Cookie
     {
         if (null === $path) {
             $path = $this->path;

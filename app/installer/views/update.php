@@ -10,15 +10,15 @@
 
             <template v-if="!update.msg">
                 <h2 class="uk-h3">{{ 'There is an update available.' | trans }}</h2>
-                <p>{{ 'Update to Pagekit %version% automatically or download the package and install it manually! Read the changelog below to see what\'s new.' | trans(update) }}</p>
+                <p>{{ 'Update to GasTTropia %version% automatically or download the package and install it manually! Read the changelog below to see what\'s new.' | trans(update) }}</p>
             </template>
 
             <p v-html="update.msg" v-else></p>
         </div>
 
         <div v-show="!hasUpdate">
-            <h2 class="uk-h3">{{ 'You have the latest version of Pagekit.' | trans }}</h2>
-            <p>{{ 'You have the latest version of Pagekit. You do not need to update. However, if you want to re-install version %version%, you can download the package and re-install manually.' | trans(update) }}</p>
+            <h2 class="uk-h3">{{ 'You have the latest version of GasTTropia.' | trans }}</h2>
+            <p>{{ 'You have the latest version of GasTTropia. You do not need to update. However, if you want to re-install version %version%, you can download the package and re-install manually.' | trans(update) }}</p>
         </div>
 
         <p class="uk-disabled">

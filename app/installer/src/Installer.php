@@ -61,7 +61,7 @@ class Installer
 
                 if ($this->app->db()->getUtility()->tableExists('@system_config')) {
                     $status = 'tables-exist';
-                    $message = __('Existing Pagekit installation detected. Choose different table prefix?');
+                    $message = __('Existing GasTTropia installation detected. Choose different table prefix?');
                 } else {
                     $status = 'no-tables';
                 }
