@@ -15,6 +15,9 @@ class InstallerController
     public function __construct()
     {
         $app = App::getInstance();
+        if (!$app instanceof \Pagekit\Application) {
+            throw new \RuntimeException('App::getInstance() did not return a Pagekit\Application instance.');
+        }
         $this->installer = new Installer($app);
     }
 
