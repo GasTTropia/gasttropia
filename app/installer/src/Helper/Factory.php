@@ -15,7 +15,7 @@ class Factory extends BaseFactory
         self::$config = $config;
     }
 
-    public static function createConfig(IOInterface $io = null, $cwd = null): Config
+    public static function createConfig(?IOInterface $io = null, $cwd = null): Config
     {
         $config = new Config(true, $cwd);
         $config->merge(['config' => static::$config]);
