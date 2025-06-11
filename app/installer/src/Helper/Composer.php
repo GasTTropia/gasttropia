@@ -60,7 +60,8 @@ class Composer
             try {
                 $normalized = $versionParser->normalize($version);
                 $refresh[] = new Package($name, $normalized, $version);
-            } catch (\UnexpectedValueException $e) {}
+            } catch (\UnexpectedValueException $e) {
+            }
         }
 
         $this->composerUpdate(array_keys($install), $refresh, $packagist, $preferSource);
@@ -119,6 +120,9 @@ class Composer
         $internal->addRepository(new InstalledFilesystemRepository($installed));
 
         $composer = $this->getComposer($packagist);
+        if ($composer === null) {
+            throw new \RuntimeException('Composer instance is null.');
+        }
         $composer->getDownloadManager()->setOutputProgress(false);
 
         $local = $composer->getRepositoryManager()->getLocalRepository();
@@ -138,7 +142,13 @@ class Composer
         }
 
         if ($updates) {
-            $installer->setUpdateWhitelist($updates)->setWhitelistDependencies();
+            if (method_exists($installer, 'setUpdateAllowList')) {
+                // Für neuere Composer-Versionen
+                $installer->setUpdateAllowList($updates);
+            } else {
+                // Fallback für ältere Composer-Versionen
+                $installer->setUpdateWhitelist($updates)->setWhitelistDependencies();
+            }
         }
 
         $installer->run();
@@ -235,10 +245,10 @@ class Composer
         switch ($unit) {
             case 'g':
                 $value *= 1024;
-            // no break (cumulative multiplier)
+                // no break (cumulative multiplier)
             case 'm':
                 $value *= 1024;
-            // no break (cumulative multiplier)
+                // no break (cumulative multiplier)
             case 'k':
                 $value *= 1024;
         }
