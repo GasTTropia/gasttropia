@@ -143,10 +143,10 @@ class Composer
 
         if ($updates) {
             if (method_exists($installer, 'setUpdateAllowList')) {
-                // Für neuere Composer-Versionen
+                // for newer Composer
                 $installer->setUpdateAllowList($updates);
             } else {
-                // Fallback für ältere Composer-Versionen
+                // Fallback for older Composer
                 $installer->setUpdateWhitelist($updates)->setWhitelistDependencies();
             }
         }

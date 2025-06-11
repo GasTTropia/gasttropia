@@ -4,7 +4,40 @@ use Pagekit\Application as App;
 
 App::config()->set('system/site', App::config('system/site')->merge([
     'frontpage' => 1,
-    'view' => ['logo' => 'storage/ttags-logo.png']
+    'view' => [
+        'logo' => 'storage/ttags-logo.png',
+    ],
+    'description' => '',
+    'maintenance' => [
+        'enabled' => true,
+        'logo' => 'storage/ttags-logo.png',
+        'msg' => ''
+    ],
+    'icons' => [
+        'favicon' => 'storage/favicon.ico',
+        'appicon' => 'storage/apple_touch_icon.png'
+    ],
+    'code' => [
+        'header' => '',
+        'footer' => '<script>window.gtranslateSettings = {
+        "default_language":"de",
+        "native_language_names":true,
+        "detect_browser_language":true,
+        "languages":["de","en","ru","tr","it","fr","es","ca"],
+        "wrapper_selector":".gtranslate_wrapper",
+        "switcher_horizontal_position":"right",
+        "switcher_vertical_position":"top",
+        "float_switcher_open_direction":"bottom"
+    }
+    $(document).ready(function() {
+        $(".gt-current-lang").each(function() {
+            // Füge das Bild-Element nur für dieses spezifische .gt-current-lang-Element an
+            $(this).append($(this).find("img"));
+        });
+    });
+</script>
+<script src="https://cdn.gtranslate.net/widgets/latest/float.js" defer></script>'
+    ]
 ]));
 
 App::db()->insert('@system_config', ['name' => 'theme-one', 'value' => '{"logo_contrast":"storage/ttags-logo.png","_menus":{"main":"main","offcanvas":"main"},"_positions":{"hero":[1],"footer":[2]},"_widgets":{"1":{"title_hide":true,"title_size":"uk-card-title","alignment":true,"html_class":"","panel":""},"2":{"title_hide":true,"title_size":"uk-card-title","alignment":"true","html_class":"","panel":""}},"_nodes":{"1":{"title_hide":true,"title_large":false,"alignment":true,"html_class":"","content_hide":false,"sidebar_first":false,"positions":{"hero":{"image":"storage/home-hero.jpg","image_position":"","effect":"","width":"","height":"full","vertical_align":"middle","style":"uk-section-secondary","size":"uk-section-large","padding_remove_top":false,"padding_remove_bottom":false,"preserve_color":false,"overlap":false,"header_transparent":true,"header_preserve_color":false,"header_transparent_noplaceholder":true},"top-a":{"image":"","image_position":"","effect":"","width":"","height":"","vertical_align":"middle","style":"uk-section-muted","size":"","padding_remove_top":false,"padding_remove_bottom":false,"preserve_color":false,"overlap":false,"header_transparent":false,"header_preserve_color":false,"header_transparent_noplaceholder":false},"top-c":{"image":"","image_position":"","effect":"","width":"","height":"","vertical_align":"middle","style":"uk-section-muted","size":"","padding_remove_top":false,"padding_remove_bottom":false,"preserve_color":false,"overlap":false,"header_transparent":false,"header_preserve_color":false,"header_transparent_noplaceholder":false},"bottom-a":{"image":"","image_position":"","effect":"","width":"","height":"","vertical_align":"middle","style":"uk-section-muted","size":"","padding_remove_top":false,"padding_remove_bottom":false,"preserve_color":false,"overlap":false,"header_transparent":false,"header_preserve_color":false,"header_transparent_noplaceholder":false},"bottom-c":{"image":"","image_position":"","effect":"","width":"","height":"","vertical_align":"middle","style":"uk-section-muted","size":"","padding_remove_top":false,"padding_remove_bottom":false,"preserve_color":false,"overlap":false,"header_transparent":false,"header_preserve_color":false,"header_transparent_noplaceholder":false},"top-b":{"image":"","image_position":"","effect":"","width":"","height":"","vertical_align":"middle","style":"uk-section-default","size":"","padding_remove_top":false,"padding_remove_bottom":false,"preserve_color":false,"overlap":false,"header_transparent":false,"header_preserve_color":false,"header_transparent_noplaceholder":false},"main":{"image":"","image_position":"","effect":"","width":"","height":"","vertical_align":"middle","style":"uk-section-default","size":"","padding_remove_top":false,"padding_remove_bottom":false,"preserve_color":false,"overlap":false,"header_transparent":false,"header_preserve_color":false,"header_transparent_noplaceholder":false},"bottom-b":{"image":"","image_position":"","effect":"","width":"","height":"","vertical_align":"middle","style":"uk-section-default","size":"","padding_remove_top":false,"padding_remove_bottom":false,"preserve_color":false,"overlap":false,"header_transparent":false,"header_preserve_color":false,"header_transparent_noplaceholder":false}}}}}']);
