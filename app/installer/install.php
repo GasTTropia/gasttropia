@@ -230,6 +230,15 @@ $themePreset = [
     ],
 ];
 
+App::db()->insert('@system_config', [
+    'name'  => 'theme-one',
+    'value' => json_encode(
+        $themePreset,
+        JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+    ),
+]);
+
+
 /* ------------------------------------------------------------------
  | 3) Nodes / menu structure
  * -----------------------------------------------------------------*/
@@ -308,7 +317,7 @@ if (App::db()->getUtility()->tableExists('@system_user')) {
         'status' => 1,
         'registered' => date('Y-m-d H:i:s'),
         'roles' => '2,3',
-        'data' => [
+        'data' => json_encode([
             'admin' => [
                 'menu' => [
                     'site' => 1,
@@ -318,7 +327,7 @@ if (App::db()->getUtility()->tableExists('@system_user')) {
                     'system: marketplace' => 5
                 ]
             ]
-        ]
+        ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES),
     ]);
 }
 
