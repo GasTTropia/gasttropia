@@ -8,7 +8,7 @@
 use Pagekit\Application as App;
 
 /* ------------------------------------------------------------------
- | Helper: insert widget with automatic JSON encoding
+ * Helper: insert widget with automatic JSON encoding
  * -----------------------------------------------------------------*/
 
 function insertWidget(string $title, string $type, $nodes, array $payload, int $status = 1): void
@@ -28,7 +28,7 @@ function insertWidget(string $title, string $type, $nodes, array $payload, int $
 }
 
 /* ------------------------------------------------------------------
- | 1) Basic site config (logo, maintenance, code snippets …)
+ * 1) Basic site config (logo, maintenance, code snippets …)
  * -----------------------------------------------------------------*/
 App::config()->set('system/site', App::config('system/site')->merge([
     'frontpage'   => 1,
@@ -64,7 +64,7 @@ HTML
 ]));
 
 /* ------------------------------------------------------------------
- | 2) Theme-Preset  – TODO: move to packages/theme-one/scripts.php
+ * 2) Theme-Preset  – TODO: move to packages/theme-one/scripts.php
  * -----------------------------------------------------------------*/
 $themePreset = [
     'logo_contrast' => 'storage/ttags-logo.png',
@@ -240,7 +240,7 @@ App::db()->insert('@system_config', [
 
 
 /* ------------------------------------------------------------------
- | 3) Nodes / menu structure
+ * 3) Nodes / menu structure
  * -----------------------------------------------------------------*/
 App::db()->insert('@system_node', [
     'priority' => 1,
@@ -266,7 +266,7 @@ App::db()->insert('@system_node', [
 ]);
 
 /* ------------------------------------------------------------------
- | 4) Demo widgets  – TODO: replace / move when custom packages exist
+ * 4) Demo widgets  – TODO: replace / move when custom packages exist
  * -----------------------------------------------------------------*/
 insertWidget('Feedback', 'system/text', 1, [
     'content' => '<a class="uk-thumbnail" href="https://www.ttags.de/" target="_blank">
@@ -290,7 +290,7 @@ insertWidget('Öffnungszeiten', 'system/text', 1, [
 ]);
 
 /* ------------------------------------------------------------------
- | 5) Roles ➜ Admin user
+ * 5) Roles ➜ Admin user
  * -----------------------------------------------------------------*/
 if (App::db()->getUtility()->tableExists('@system_role')) {
     App::db()->insert('@system_role', [
@@ -332,7 +332,7 @@ if (App::db()->getUtility()->tableExists('@system_user')) {
 }
 
 /* ------------------------------------------------------------------
- | 6) Demo blog post (optional)
+ * 6) Demo blog post (optional)
  * -----------------------------------------------------------------*/
 if (App::db()->getUtility()->tableExists('@blog_post')) {
     App::db()->insert('@blog_post', [
