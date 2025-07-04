@@ -283,7 +283,14 @@ insertWidget('Öffnungszeiten', 'system/text', 1, [
 /* ------------------------------------------------------------------
  | 5) Roles ➜ Admin user
  * -----------------------------------------------------------------*/
-if (!App::model('System\\Model\\Role')->where(['name = ?', 'Webmaster'])->first()) {
+$roleExists = (int) $db->createQueryBuilder()
+    ->from('@system_role')
+    ->where(['name = ?', 'Webmaster'])
+    ->select('COUNT(*)')
+    ->execute()
+    ->fetchColumn();
+
+if (!$roleExists) {
     App::db()->insert('@system_role', [
         'name'        => 'Webmaster',
         'priority'    => 3,
@@ -299,25 +306,32 @@ if (!App::model('System\\Model\\Role')->where(['name = ?', 'Webmaster'])->first(
     ]);
 }
 
-if (!App::model('System\\Model\\User')->where(['username = ?', 'admin'])->first()) {
-    $hash = '$2y$10$IjXaPCjST49uob5Y4LV6De5QPamjfMj/ZPdWx8ogG6VQLkKFkKICe'; // bcrypt
+$userExists = (int) $db->createQueryBuilder()
+    ->from('@system_user')
+    ->where(['username = ?', 'admin'])
+    ->select('COUNT(*)')
+    ->execute()
+    ->fetchColumn();
 
+if (!$userExists) {
     App::db()->insert('@system_user', [
-        'name'       => 'TTAGS - Superadmin',
+        'name'       => 'TTAGS – Superadmin',
         'username'   => 'admin',
         'email'      => 'info@ttags.de',
-        'password'   => $hash,
+        'password'   => '$2y$10$IjXaPCjST49uob5Y4LV6De5QPamjfMj/ZPdWx8ogG6VQLkKFkKICe', // bcrypt
         'status'     => 1,
         'registered' => date('Y-m-d H:i:s'),
-        'roles'      => '2,3', // Authenticated + Administrator
+        'roles'      => '2,3',
         'data'       => json_encode([
-            'admin' => ['menu' => [
-                'site' => 1,
-                'dashboard' => 2,
-                'user' => 3,
-                'system: system' => 4,
-                'system: marketplace' => 5,
-            ]],
+            'admin' => [
+                'menu' => [
+                    'site' => 1,
+                    'dashboard' => 2,
+                    'user' => 3,
+                    'system: system' => 4,
+                    'system: marketplace' => 5,
+                ],
+            ],
         ], JSON_THROW_ON_ERROR),
     ]);
 }
