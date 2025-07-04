@@ -301,7 +301,6 @@ if (App::db()->getUtility()->tableExists('@system_role')) {
 
 if (App::db()->getUtility()->tableExists('@system_user')) {
     App::db()->insert('@system_user', [
-        'id' => 1,
         'name' => 'TTAGS - Superadmin',
         'username' => 'admin',
         'email' => 'info@ttags.de',
