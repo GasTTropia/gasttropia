@@ -1,72 +1,341 @@
 <?php
 
+/**
+ * Minimal, but safe core installer for GasTTropia.
+ * Move the marked TODO sections to the proper packages later.
+ */
+
 use Pagekit\Application as App;
 
+/* ------------------------------------------------------------------
+ | Helper: insert widget with automatic JSON encoding
+ * -----------------------------------------------------------------*/
+
+function insertWidget(string $title, string $type, $nodes, array $payload, int $status = 1): void
+{
+    $nodesCsv = is_array($nodes) ? implode(',', $nodes) : (string) $nodes;
+
+    App::db()->insert('@system_widget', [
+        'title'  => $title,
+        'type'   => $type,
+        'status' => $status,
+        'nodes'  => $nodesCsv,
+        'data'   => json_encode(
+            $payload,
+            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR
+        ),
+    ]);
+}
+
+/* ------------------------------------------------------------------
+ | 1) Basic site config (logo, maintenance, code snippets …)
+ * -----------------------------------------------------------------*/
 App::config()->set('system/site', App::config('system/site')->merge([
-    'frontpage' => 1,
-    'view' => [
-        'logo' => 'storage/ttags-logo.png',
-    ],
+    'frontpage'   => 1,
+    'view'        => ['logo' => 'storage/ttags-logo.png'],
     'description' => '',
     'maintenance' => [
         'enabled' => true,
-        'logo' => 'storage/ttags-logo.png',
-        'msg' => ''
+        'logo'    => 'storage/ttags-logo.png',
+        'msg'     => ''
     ],
-    'icons' => [
+    'icons'       => [
         'favicon' => 'storage/favicon.ico',
         'appicon' => 'storage/apple_touch_icon.png'
     ],
-    'code' => [
+    'code'        => [
         'header' => '',
-        'footer' => '<script>window.gtranslateSettings = {
-        "default_language":"de",
-        "native_language_names":true,
-        "detect_browser_language":true,
-        "languages":["de","en","ru","tr","it","fr","es","ca"],
-        "wrapper_selector":".gtranslate_wrapper",
-        "switcher_horizontal_position":"right",
-        "switcher_vertical_position":"top",
-        "float_switcher_open_direction":"bottom"
-    }
-    $(document).ready(function() {
-        $(".gt-current-lang").each(function() {
-            // Füge das Bild-Element nur für dieses spezifische .gt-current-lang-Element an
-            $(this).append($(this).find("img"));
-        });
-    });
+        'footer' => <<<'HTML'
+<script>window.gtranslateSettings = {
+  "default_language":"de",
+  "native_language_names":true,
+  "detect_browser_language":true,
+  "languages":["de","en"],
+  "wrapper_selector":".gtranslate_wrapper",
+  "switcher_horizontal_position":"right",
+  "switcher_vertical_position":"top",
+  "float_switcher_open_direction":"bottom"
+}
+$(function(){ $(".gt-current-lang").append($(".gt-current-lang img"));});
 </script>
-<script src="https://cdn.gtranslate.net/widgets/latest/float.js" defer></script>'
-    ]
+<script src="https://cdn.gtranslate.net/widgets/latest/float.js" defer></script>
+HTML
+    ],
 ]));
 
-App::db()->insert('@system_config', ['name' => 'theme-one', 'value' => '{"logo_contrast":"storage/ttags-logo.png","_menus":{"main":"main","offcanvas":"main"},"_positions":{"hero":[1],"footer":[2]},"_widgets":{"1":{"title_hide":true,"title_size":"uk-card-title","alignment":true,"html_class":"","panel":""},"2":{"title_hide":true,"title_size":"uk-card-title","alignment":"true","html_class":"","panel":""}},"_nodes":{"1":{"title_hide":true,"title_large":false,"alignment":true,"html_class":"","content_hide":false,"sidebar_first":false,"positions":{"hero":{"image":"storage/home-hero.jpg","image_position":"","effect":"","width":"","height":"full","vertical_align":"middle","style":"uk-section-secondary","size":"uk-section-large","padding_remove_top":false,"padding_remove_bottom":false,"preserve_color":false,"overlap":false,"header_transparent":true,"header_preserve_color":false,"header_transparent_noplaceholder":true},"top-a":{"image":"","image_position":"","effect":"","width":"","height":"","vertical_align":"middle","style":"uk-section-muted","size":"","padding_remove_top":false,"padding_remove_bottom":false,"preserve_color":false,"overlap":false,"header_transparent":false,"header_preserve_color":false,"header_transparent_noplaceholder":false},"top-c":{"image":"","image_position":"","effect":"","width":"","height":"","vertical_align":"middle","style":"uk-section-muted","size":"","padding_remove_top":false,"padding_remove_bottom":false,"preserve_color":false,"overlap":false,"header_transparent":false,"header_preserve_color":false,"header_transparent_noplaceholder":false},"bottom-a":{"image":"","image_position":"","effect":"","width":"","height":"","vertical_align":"middle","style":"uk-section-muted","size":"","padding_remove_top":false,"padding_remove_bottom":false,"preserve_color":false,"overlap":false,"header_transparent":false,"header_preserve_color":false,"header_transparent_noplaceholder":false},"bottom-c":{"image":"","image_position":"","effect":"","width":"","height":"","vertical_align":"middle","style":"uk-section-muted","size":"","padding_remove_top":false,"padding_remove_bottom":false,"preserve_color":false,"overlap":false,"header_transparent":false,"header_preserve_color":false,"header_transparent_noplaceholder":false},"top-b":{"image":"","image_position":"","effect":"","width":"","height":"","vertical_align":"middle","style":"uk-section-default","size":"","padding_remove_top":false,"padding_remove_bottom":false,"preserve_color":false,"overlap":false,"header_transparent":false,"header_preserve_color":false,"header_transparent_noplaceholder":false},"main":{"image":"","image_position":"","effect":"","width":"","height":"","vertical_align":"middle","style":"uk-section-default","size":"","padding_remove_top":false,"padding_remove_bottom":false,"preserve_color":false,"overlap":false,"header_transparent":false,"header_preserve_color":false,"header_transparent_noplaceholder":false},"bottom-b":{"image":"","image_position":"","effect":"","width":"","height":"","vertical_align":"middle","style":"uk-section-default","size":"","padding_remove_top":false,"padding_remove_bottom":false,"preserve_color":false,"overlap":false,"header_transparent":false,"header_preserve_color":false,"header_transparent_noplaceholder":false}}}}}']);
+/* ------------------------------------------------------------------
+ | 2) Theme-Preset  – TODO: move to packages/theme-one/scripts.php
+ * -----------------------------------------------------------------*/
+$themePreset = [
+    'logo_contrast' => 'storage/ttags-logo.png',
+    '_menus'    => ['main' => 'main', 'offcanvas' => 'main'],
+    '_positions' => ['hero' => [1], 'footer' => [2]],
+    '_widgets'  => [
+        '1' => ['title_hide' => true, 'title_size' => 'uk-card-title', 'alignment' => true],
+        '2' => ['title_hide' => true, 'title_size' => 'uk-card-title', 'alignment' => true],
+    ],
+    '_nodes'    => [
+        '1' => [
+            'title_hide' => true,
+            'alignment'  => true,
+            'positions' => [
 
-App::db()->insert('@system_node', ['priority' => 1, 'status' => 1, 'title' => 'Home', 'slug' => 'home', 'path' => '/home', 'link' => '@page/1', 'type' => 'page', 'menu' => 'main', 'data' => "{\"defaults\":{\"id\":1}}"]);
+                'hero' => [
+                    'image'                          => 'storage/home-hero.jpg',
+                    'image_position'                 => '',
+                    'effect'                         => '',
+                    'width'                          => '',
+                    'height'                         => 'full',
+                    'vertical_align'                 => 'middle',
+                    'style'                          => 'uk-section-secondary',
+                    'size'                           => 'uk-section-large',
+                    'padding_remove_top'             => false,
+                    'padding_remove_bottom'          => false,
+                    'preserve_color'                 => false,
+                    'overlap'                        => false,
+                    'header_transparent'             => true,
+                    'header_preserve_color'          => false,
+                    'header_transparent_noplaceholder' => true,
+                ],
 
-App::db()->insert('@system_node', ['priority' => 2, 'status' => 1, 'title' => 'Blog', 'slug' => 'blog', 'path' => '/blog', 'link' => '@blog', 'type' => 'blog', 'menu' => 'main']);
+                'top-a' => [
+                    'image'                          => '',
+                    'image_position'                 => '',
+                    'effect'                         => '',
+                    'width'                          => '',
+                    'height'                         => '',
+                    'vertical_align'                 => 'middle',
+                    'style'                          => 'uk-section-muted',
+                    'size'                           => '',
+                    'padding_remove_top'             => false,
+                    'padding_remove_bottom'          => false,
+                    'preserve_color'                 => false,
+                    'overlap'                        => false,
+                    'header_transparent'             => false,
+                    'header_preserve_color'          => false,
+                    'header_transparent_noplaceholder' => false,
+                ],
 
-App::db()->insert('@system_widget', ['title' => 'Hello, I\'m GasTTropia', 'type' => 'system/text', 'status' => 1, 'nodes' => 1, 'data' => '{"content":"<h1 class=\"uk-heading-large uk-margin-large-bottom\">Hello, I\'m GasTTropia,<br class=\"uk-visible@s\"> your new favorite CMS.<\/h1>\n\n<a class=\"uk-button uk-button-default uk-button-large\" href=\"http:\/\/www.ttags.de\/gasttropia\">Get started<\/a>"}']);
+                'top-c' => [
+                    'image'                          => '',
+                    'image_position'                 => '',
+                    'effect'                         => '',
+                    'width'                          => '',
+                    'height'                         => '',
+                    'vertical_align'                 => 'middle',
+                    'style'                          => 'uk-section-muted',
+                    'size'                           => '',
+                    'padding_remove_top'             => false,
+                    'padding_remove_bottom'          => false,
+                    'preserve_color'                 => false,
+                    'overlap'                        => false,
+                    'header_transparent'             => false,
+                    'header_preserve_color'          => false,
+                    'header_transparent_noplaceholder' => false,
+                ],
 
-App::db()->insert('@system_widget', ['title' => 'Powered by GasTTropia', 'type' => 'system/text', 'status' => 1, 'data' => '{"content":"<ul class=\"uk-grid-medium uk-flex uk-flex-center\" uk-grid>\n<li><a href=\"https:\/\/github.com\/GasTTropia\" class=\"uk-icon-link\" uk-icon=\"github\" ratio=\"1.25\"><\/a><\/li>\n<\/ul>\n\n<p>Powered by <a href=\"https:\/\/ttags.de\/gasttropia\">GasTTropia<\/a><\/p>"}']);
+                'bottom-a' => [
+                    'image'                          => '',
+                    'image_position'                 => '',
+                    'effect'                         => '',
+                    'width'                          => '',
+                    'height'                         => '',
+                    'vertical_align'                 => 'middle',
+                    'style'                          => 'uk-section-muted',
+                    'size'                           => '',
+                    'padding_remove_top'             => false,
+                    'padding_remove_bottom'          => false,
+                    'preserve_color'                 => false,
+                    'overlap'                        => false,
+                    'header_transparent'             => false,
+                    'header_preserve_color'          => false,
+                    'header_transparent_noplaceholder' => false,
+                ],
 
-App::db()->insert('@system_page', [
-    'title' => 'Home',
-    'content' => "<div class=\"uk-width-3-4@m uk-container\">\n\n<h3 class=\"uk-h1 uk-margin-large-bottom\">Uniting fresh design and clean code<br class=\"uk-visible@s\"> to create beautiful websites.</h3>\n\n<p class=\"uk-width-2-3@m uk-container\">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>\n\n</div>",
-    'data' => '{"title":true}'
+                'bottom-c' => [
+                    'image'                          => '',
+                    'image_position'                 => '',
+                    'effect'                         => '',
+                    'width'                          => '',
+                    'height'                         => '',
+                    'vertical_align'                 => 'middle',
+                    'style'                          => 'uk-section-muted',
+                    'size'                           => '',
+                    'padding_remove_top'             => false,
+                    'padding_remove_bottom'          => false,
+                    'preserve_color'                 => false,
+                    'overlap'                        => false,
+                    'header_transparent'             => false,
+                    'header_preserve_color'          => false,
+                    'header_transparent_noplaceholder' => false,
+                ],
+
+                'top-b' => [
+                    'image'                          => '',
+                    'image_position'                 => '',
+                    'effect'                         => '',
+                    'width'                          => '',
+                    'height'                         => '',
+                    'vertical_align'                 => 'middle',
+                    'style'                          => 'uk-section-default',
+                    'size'                           => '',
+                    'padding_remove_top'             => false,
+                    'padding_remove_bottom'          => false,
+                    'preserve_color'                 => false,
+                    'overlap'                        => false,
+                    'header_transparent'             => false,
+                    'header_preserve_color'          => false,
+                    'header_transparent_noplaceholder' => false,
+                ],
+
+                'main' => [
+                    'image'                          => '',
+                    'image_position'                 => '',
+                    'effect'                         => '',
+                    'width'                          => '',
+                    'height'                         => '',
+                    'vertical_align'                 => 'middle',
+                    'style'                          => 'uk-section-default',
+                    'size'                           => '',
+                    'padding_remove_top'             => false,
+                    'padding_remove_bottom'          => false,
+                    'preserve_color'                 => false,
+                    'overlap'                        => false,
+                    'header_transparent'             => false,
+                    'header_preserve_color'          => false,
+                    'header_transparent_noplaceholder' => false,
+                ],
+
+                'bottom-b' => [
+                    'image'                          => '',
+                    'image_position'                 => '',
+                    'effect'                         => '',
+                    'width'                          => '',
+                    'height'                         => '',
+                    'vertical_align'                 => 'middle',
+                    'style'                          => 'uk-section-default',
+                    'size'                           => '',
+                    'padding_remove_top'             => false,
+                    'padding_remove_bottom'          => false,
+                    'preserve_color'                 => false,
+                    'overlap'                        => false,
+                    'header_transparent'             => false,
+                    'header_preserve_color'          => false,
+                    'header_transparent_noplaceholder' => false,
+                ],
+
+            ],
+        ],
+
+    ],
+];
+
+/* ------------------------------------------------------------------
+ | 3) Nodes / menu structure
+ * -----------------------------------------------------------------*/
+App::db()->insert('@system_node', [
+    'priority' => 1,
+    'status'   => 1,
+    'title'    => 'Home',
+    'slug'     => 'home',
+    'path'     => '/home',
+    'link'     => '@page/1',
+    'type'     => 'page',
+    'menu'     => 'main',
+    'data'     => json_encode(['defaults' => ['id' => 1]], JSON_THROW_ON_ERROR),
 ]);
 
+App::db()->insert('@system_node', [
+    'priority' => 2,
+    'status'   => 1,
+    'title'    => 'Blog',
+    'slug'     => 'blog',
+    'path'     => '/blog',
+    'link'     => '@blog',
+    'type'     => 'blog',
+    'menu'     => 'main',
+]);
+
+/* ------------------------------------------------------------------
+ | 4) Demo widgets  – TODO: replace / move when custom packages exist
+ * -----------------------------------------------------------------*/
+insertWidget('Feedback', 'system/text', 1, [
+    'content' => '<a class="uk-thumbnail" href="https://www.ttags.de/" target="_blank">
+        <span class="img-box img-feedback"><img src="storage/shot.png" alt="Vote for free Shot"></span></a>',
+]);
+
+insertWidget('Website', 'system/text', 1, [
+    'content' => '<a class="uk-thumbnail" href="https://www.ttags.de/" target="_blank">
+        <span class="img-box img-website"><img src="storage/ttags-logo.png" alt="TTAGS Logo"></span></a>',
+]);
+
+insertWidget('Instagram', 'system/text', 1, [
+    'content' => '<a class="uk-thumbnail" href="https://www.instagram.com/ttags.de/" target="_blank">
+        <span class="img-box"><img src="/storage/insta.jpg" alt="Instagram"></span></a>',
+]);
+
+insertWidget('Öffnungszeiten', 'system/text', 1, [
+    'content' => '<table class="uk-table uk-table-small uk-table-divider"><tbody>
+        <tr><td>Di. + Mi. + Do. + So.</td><td>12:00 - 22:00</td></tr>
+        <tr><td>Fr. + Sa.</td><td>12:00 - 22:30</td></tr></tbody></table>',
+]);
+
+/* ------------------------------------------------------------------
+ | 5) Roles ➜ Admin user
+ * -----------------------------------------------------------------*/
+if (!App::model('System\\Model\\Role')->where(['name = ?', 'Webmaster'])->first()) {
+    App::db()->insert('@system_role', [
+        'name'        => 'Webmaster',
+        'priority'    => 3,
+        'permissions' => '
+            system: manage widgets,
+            system: manage storage read only,
+            system: access admin area,
+            system: manage userstorage read only,
+            site: maintenance access,
+            site: manage site,
+            listings: manage lists
+        ',
+    ]);
+}
+
+if (!App::model('System\\Model\\User')->where(['username = ?', 'admin'])->first()) {
+    $hash = '$2y$10$IjXaPCjST49uob5Y4LV6De5QPamjfMj/ZPdWx8ogG6VQLkKFkKICe'; // bcrypt
+
+    App::db()->insert('@system_user', [
+        'name'       => 'TTAGS - Superadmin',
+        'username'   => 'admin',
+        'email'      => 'info@ttags.de',
+        'password'   => $hash,
+        'status'     => 1,
+        'registered' => date('Y-m-d H:i:s'),
+        'roles'      => '2,3', // Authenticated + Administrator
+        'data'       => json_encode([
+            'admin' => ['menu' => [
+                'site' => 1,
+                'dashboard' => 2,
+                'user' => 3,
+                'system: system' => 4,
+                'system: marketplace' => 5,
+            ]],
+        ], JSON_THROW_ON_ERROR),
+    ]);
+}
+
+/* ------------------------------------------------------------------
+ | 6) Demo blog post (optional)
+ * -----------------------------------------------------------------*/
 if (App::db()->getUtility()->tableExists('@blog_post')) {
     App::db()->insert('@blog_post', [
-        'user_id' => 1,
-        'slug' => 'hello-gasttropia',
-        'title' => 'Hello GasTTropia',
-        'status' => 2,
-        'date' => date('Y-m-d H:i:s'),
+        'user_id'  => 1,
+        'slug'     => 'hello-gasttropia',
+        'title'    => 'Hello GasTTropia',
+        'status'   => 2,
+        'date'     => date('Y-m-d H:i:s'),
         'modified' => date('Y-m-d H:i:s'),
-        'content' => "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod\ntempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,\nquis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo\nconsequat. Duis aute irure dolor in reprehenderit in voluptate velit esse\ncillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non\nproident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        'excerpt' => '',
+        'content'  => 'Lorem ipsum …',
+        'excerpt'  => '',
         'comment_status' => 1,
-        'data' => '{"title":null,"markdown":true}'
+        'data'     => json_encode(['title' => null, 'markdown' => true], JSON_THROW_ON_ERROR),
     ]);
 }
