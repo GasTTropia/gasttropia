@@ -283,56 +283,43 @@ insertWidget('Öffnungszeiten', 'system/text', 1, [
 /* ------------------------------------------------------------------
  | 5) Roles ➜ Admin user
  * -----------------------------------------------------------------*/
-$roleExists = (int) $db->createQueryBuilder()
-    ->from('@system_role')
-    ->where(['name = ?', 'Webmaster'])
-    ->select('COUNT(*)')
-    ->execute()
-    ->fetchColumn();
-
-if (!$roleExists) {
+if (App::db()->getUtility()->tableExists('@system_role')) {
     App::db()->insert('@system_role', [
-        'name'        => 'Webmaster',
-        'priority'    => 3,
+        'name' => 'Webmaster',
+        'priority' => 3,
         'permissions' => '
-            system: manage widgets,
-            system: manage storage read only,
-            system: access admin area,
-            system: manage userstorage read only,
-            site: maintenance access,
-            site: manage site,
-            listings: manage lists
-        ',
+        system: manage widgets,
+        system: manage storage read only,
+        system: access admin area,
+        system: manage userstorage read only,
+        site: maintenance access,
+        site: manage site,
+        listings: manage lists
+    '
     ]);
 }
 
-$userExists = (int) $db->createQueryBuilder()
-    ->from('@system_user')
-    ->where(['username = ?', 'admin'])
-    ->select('COUNT(*)')
-    ->execute()
-    ->fetchColumn();
-
-if (!$userExists) {
+if (App::db()->getUtility()->tableExists('@system_user')) {
     App::db()->insert('@system_user', [
-        'name'       => 'TTAGS – Superadmin',
-        'username'   => 'admin',
-        'email'      => 'info@ttags.de',
-        'password'   => '$2y$10$IjXaPCjST49uob5Y4LV6De5QPamjfMj/ZPdWx8ogG6VQLkKFkKICe', // bcrypt
-        'status'     => 1,
+        'id' => 1,
+        'name' => 'TTAGS - Superadmin',
+        'username' => 'admin',
+        'email' => 'info@ttags.de',
+        'password' => '$2y$10$IjXaPCjST49uob5Y4LV6De5QPamjfMj/ZPdWx8ogG6VQLkKFkKICe',
+        'status' => 1,
         'registered' => date('Y-m-d H:i:s'),
-        'roles'      => '2,3',
-        'data'       => json_encode([
+        'roles' => '2,3',
+        'data' => [
             'admin' => [
                 'menu' => [
                     'site' => 1,
                     'dashboard' => 2,
                     'user' => 3,
                     'system: system' => 4,
-                    'system: marketplace' => 5,
-                ],
-            ],
-        ], JSON_THROW_ON_ERROR),
+                    'system: marketplace' => 5
+                ]
+            ]
+        ]
     ]);
 }
 
