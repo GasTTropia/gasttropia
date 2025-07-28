@@ -274,8 +274,11 @@ App::db()->insert('@system_widget', [
     'status' => 1,
     'data' => json_encode([
         'content' => <<<HTML
-        <ul class="uk-grid-medium uk-flex uk-flex-center\" uk-grid>\n<li><a href=\"https:\/\/github.com\/GasTTropia\" class=\"uk-icon-link\" uk-icon=\"github\" ratio=\"1.25\"><\/a><\/li>\n<\/ul>\n\n<p>Powered by <a href=\"https:\/\/ttags.de\/gasttropia\">GasTTropia</a>
-        </p>
+        <ul class="uk-grid-medium uk-flex uk-flex-center" uk-grid>
+            <li><a href="https://github.com/GasTTropia" class="uk-icon-link" uk-icon="github" ratio="1.25"></a></li>
+        </ul>
+
+        <p>Powered by <a href="https://ttags.de/gasttropia">GasTTropia</a></p>
 HTML
     ])
 ]);
