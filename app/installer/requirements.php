@@ -530,7 +530,11 @@ class PagekitRequirements extends RequirementCollection
         );
 
         $this->addPhpIniRecommendation('short_open_tag', false);
-        $this->addPhpIniRecommendation('magic_quotes_gpc', false, true);
+
+        // TODO: Remove this in the future, as it is deprecated since PHP 5.4 and removed in PHP 7.0.
+        // $this->addPhpIniRecommendation('magic_quotes_gpc', false, true);
+        // END of TODO
+
         $this->addPhpIniRecommendation('register_globals', false, true);
         $this->addPhpIniRecommendation('session.auto_start', false);
     }
